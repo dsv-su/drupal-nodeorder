@@ -44,7 +44,7 @@ function nodeorder_admin_display_form($form, &$form_state, $tid) {
       '#type' => 'weight',
       '#title' => t('Weight for @title', array('@title' => $node->title)),
       '#title_display' => 'invisible',
-      '#delta' => 10,
+      '#delta' => 100,
       '#default_value' => $node->weight,
     );
   }
