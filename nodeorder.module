@@ -582,11 +582,10 @@ function nodeorder_can_be_ordered($node) {
         $nodeorder_vocabularies[] = $allowed_values['vocabulary'];
       }
     }   
-    
     if (!empty($nodeorder_vocabularies)) {
       $result = db_select('taxonomy_vocabulary', 'v')
         ->condition('v.module', 'nodeorder')
-        ->condition('v.vid', $nodeorder_vocabularies, 'IN')
+        ->condition('v.machine_name', $nodeorder_vocabularies, 'IN')
         ->fields('v', array('vid'))
         ->execute()
         ->fetchColumn();
@@ -785,7 +784,7 @@ function nodeorder_node_update($node) {
     // $tids = nodeorder_orderable_tids($node);
     // if (count($tids) > 0) {
     
-    if (TRUE) {
+    if (FALSE) {
       $sql = "UPDATE {taxonomy_index} SET weight = %d WHERE tid = %d AND nid = %d";
 
       foreach ($tids as $i => $tid) {
@@ -801,12 +800,12 @@ function nodeorder_node_update($node) {
     // New nodes won't have any saved weight values so this array will be empty...
     if ($node->nodeorder) {
       // Restore any saved weight values...
-      $sql = "UPDATE {taxonomy_index} SET weight = %d WHERE nid = %d AND tid = %d";
+      $sql = "UPDATE {taxonomy_index} SET weight = :w WHERE nid = :nid AND tid = :tid";
       foreach ($node->nodeorder as $tid => $weight) {
         // weight cannot be 0
         if ($weight != 0) {
           // TODO Please convert this statement to the D7 database API syntax.
-          db_query($sql, $weight, $node->nid, $tid);
+          db_query($sql, array(':w' => $weight, ':nid' => $node->nid, ':tid' => $tid));
         }
       }
     }
